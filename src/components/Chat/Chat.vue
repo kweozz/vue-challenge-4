@@ -3,20 +3,24 @@ import { reactive, onMounted } from "vue";
 import ChatMessages from "./ChatMessages.vue";
 import ChatForm from "./ChatForm.vue";
 
+// Reactive state to hold messages
 const state = reactive({
   messages: [],
 });
 
+// Function to fetch messages from the API
 async function fetchMessages() {
   try {
     const response = await fetch("https://messages-q7oe.onrender.com");
     const data = await response.json();
+    console.log("Fetched messages:", data); // Debugging log
     state.messages = data.data.messages.reverse(); // Reverse for newest first
   } catch (error) {
     console.error("Error fetching messages:", error);
   }
 }
 
+// Function to add a new message
 function addMessage(newMessage) {
   if (!newMessage || !newMessage.user || !newMessage.text) {
     console.error("Invalid message data:", newMessage);
@@ -50,6 +54,7 @@ function addMessage(newMessage) {
     });
 }
 
+// Fetch messages when the component is mounted
 onMounted(() => {
   fetchMessages();
 });
