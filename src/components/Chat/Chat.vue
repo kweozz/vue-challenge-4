@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, watch } from "vue";
 import ChatMessages from "./ChatMessages.vue";
 import ChatForm from "./ChatForm.vue";
 
@@ -11,7 +11,7 @@ const state = reactive({
 // Function to fetch messages from the API
 async function fetchMessages() {
   try {
-    const response = await fetch("https://messages-q7oe.onrender.com");
+    const response = await fetch("https://lab5-p379.onrender.com/api/v1/messages/");
     const data = await response.json();
     console.log("Fetched messages:", data); // Debugging log
     state.messages = data.data.messages.reverse(); // Reverse for newest first
@@ -28,17 +28,15 @@ function addMessage(newMessage) {
   }
 
   const messageToSend = {
-    message: {
-      user: newMessage.user,
-      text: newMessage.text,
-    },
+    user: newMessage.user,
+    text: newMessage.text,
   };
 
   // Update local state immediately
   state.messages.unshift(newMessage);
 
   // Send to API
-  fetch("https://les3mongodb-y1hu.onrender.com/api/v1/messages", {
+  fetch("https://lab5-p379.onrender.com/api/v1/messages/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -48,6 +46,8 @@ function addMessage(newMessage) {
     .then((res) => res.json())
     .then((data) => {
       console.log("Message saved:", data);
+      // Optionally fetch messages again to ensure state is updated
+      fetchMessages();
     })
     .catch((err) => {
       console.error("Error sending message:", err);
@@ -56,6 +56,12 @@ function addMessage(newMessage) {
 
 // Fetch messages when the component is mounted
 onMounted(() => {
+  fetchMessages();
+});
+
+// Watch for changes in the current video and clear messages
+watch(() => currentVideo.value, () => {
+  state.messages = [];
   fetchMessages();
 });
 </script>

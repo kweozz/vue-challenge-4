@@ -12,11 +12,8 @@ const props = defineProps({
 <template>
   <div class="comments">
     <ul>
-      <li v-for="(message, index) in messages" :key="index">
-        <div class="message-content">
-          <strong class="username">{{ message.user }}</strong>
-          <p class="message-text">{{ message.text }}</p>
-        </div>
+      <li v-for="message in messages" :key="message.id">
+        <strong>{{ message.user }}</strong>: {{ message.text }}
       </li>
     </ul>
   </div>
